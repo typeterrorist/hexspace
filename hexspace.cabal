@@ -1,0 +1,51 @@
+cabal-version:      3.0
+name:               hexspace
+version:            0.1.0.0
+synopsis:           A Haskell library for hex-based grids
+description:        A library providing data structures and algorithms for working with hexagonal grids,
+                    including utilities for rendering hex-based games using Gloss.
+license:            BSD-3-Clause
+license-file:       LICENSE
+author:             Håkon Robbestad Gylterud
+maintainer:         ocnoccatph@openbastille.org
+category:           Game
+build-type:         Simple
+
+
+library hexspace-internal
+    exposed-modules:  Data.HexSpace.Internal
+    build-depends:    base
+    hs-source-dirs:   src
+    default-language: GHC2021
+
+library
+    exposed-modules:  Data.HexSpace
+                    , Data.HexSpace.Coordinates
+                    , Data.HexSpace.Line
+                    , Graphics.HexSpace.Gloss
+                    , Data.HexSpace.Grid
+    other-modules:    Data.HexSpace.Internal
+    build-depends:    base
+                    , QuickCheck
+                    , gloss
+                    , containers
+                    , hexspace-internal
+                    , applicative-logic
+                    , PSQueue
+    hs-source-dirs:   src
+    default-language: GHC2021
+    default-extensions: ApplicativeDo
+    ghc-options:      -Wall -Wno-orphans
+
+test-suite hexspace-test
+    type:             exitcode-stdio-1.0
+    main-is:          Main.hs
+    other-modules:    Data.HexSpaceSpec
+    build-depends:    base
+                    , hexspace
+                    , QuickCheck
+                    , hspec
+                    , applicative-logic
+                    , containers
+    hs-source-dirs:   test
+    default-language: GHC2021

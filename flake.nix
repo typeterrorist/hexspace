@@ -11,7 +11,7 @@
       let
         pkgs = nixpkgs.legacyPackages.${system};
         
-        packageName = "hexes";
+        packageName = "hexspace";
         
         # Create the package with explicit dependencies
         package = pkgs.haskellPackages.callCabal2nix packageName ./. { } ;

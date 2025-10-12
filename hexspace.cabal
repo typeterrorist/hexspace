@@ -5,7 +5,7 @@ synopsis:           A Haskell library for hex-based grids
 description:        A library providing data structures and algorithms for working with hexagonal grids,
                     including utilities for rendering hex-based games using Gloss.
 license:            BSD-3-Clause
-license-file:       LICENSE
+license-file:       LICENSE.md
 author:             Håkon Robbestad Gylterud
 maintainer:         ocnoccatph@openbastille.org
 category:           Game

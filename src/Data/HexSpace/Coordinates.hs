@@ -43,6 +43,7 @@ module Data.HexSpace.Coordinates
   , isAdjacent
   , nearestHex
   , nearestHexR
+  , opposite
   , orientation
   , origo
   , primitiveDirection
@@ -112,6 +113,15 @@ torsor dq dr ds = Torsor (ds -dr) (dq - ds) (dr - dq)
 
 data Direction = NW | NE | E | SE | SW | W
   deriving (Show, Eq, Ord, Enum, Bounded)
+
+
+opposite :: Direction -> Direction
+opposite NW = SE
+opposite NE = SW
+opposite E = W
+opposite SE = NW
+opposite SW = NE
+opposite W = E
 
 data CornerDirection = NC | NEC | SEC | SC | SWC | NWC
   deriving (Show, Eq, Ord, Enum, Bounded)

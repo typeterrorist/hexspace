@@ -35,6 +35,7 @@ module Data.HexSpace ( Cube
   , isAdjacent
   , nearestHex
   , nearestHexR
+  , opposite
   , orientation
   , origo
   , primitiveDirection

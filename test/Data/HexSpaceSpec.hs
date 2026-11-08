@@ -138,6 +138,29 @@ spec = do
        \(b1 :: Line.Beam Rational) (b2 :: Line.Beam Rational) -> case Line.intersectBeam b1 b2 of
               (Just (p,t,u)) -> p === Line.origin b2 <+> (Data.HexSpace.scale u (Line.direction b2))
               Nothing -> 1 === 1
+  describe "Line through a hex" $ do
+    it "passes through the hexes it is drawn with" $ property $
+      \(l :: Line.Line Integer) -> all (Line.through (fractional l)) (Line.hexes l)
+
+    it "passes through no hex but those beside the hexes it is drawn with" $ property $
+      \(l :: Line.Line Integer) (h :: Cube Integer) ->
+        not (Line.through (fractional l) h) || any (\d -> d == h || isAdjacent d h) (Line.hexes l)
+
+    it "passes through the hex of a point alone, and no other" $ property $
+      \(c :: Cube Integer) -> let p = (fromInteger <$> c) <+> Data.HexSpace.scale (1 / 3 :: Rational) (cardinal E)
+                              in Line.through (Line.Line p p) c && not (Line.through (Line.Line p p) (c <+> cardinal E))
+
+    it "touches a hex at its corner" $
+      let radial  = unitHexCorner (ccwEnd NE) :: Torsor Rational
+          tangent = cross (torsor 1 1 1) radial
+          corner  = origo <+> radial
+          across  = Line.Line (corner <+> Data.HexSpace.scale (1 / 2) tangent) (corner <+> Data.HexSpace.scale (-1 / 2) tangent)
+      in Line.through across (origo :: Cube Integer) `shouldBe` True
+
+    it "misses a hex it runs beside" $
+      let beside = Line.Line (origo <+> Data.HexSpace.scale 2 (cardinal NW)) (origo <+> Data.HexSpace.scale 2 (cardinal NE)) :: Line.Line Rational
+      in Line.through beside (origo :: Cube Integer) `shouldBe` False
+
   describe "Direction and orientation functions" $ do
     it "facing returns the closest cardinal direction" $ property $
       \(t :: Torsor Integer) ->
@@ -309,3 +332,6 @@ genSmallConnected = do
   g <- elements (Set.toList (Set.delete s w))
   pure (w,s,g)
 
+-- A whole-numbered line as a line with fractional ends.
+fractional :: Line.Line Integer -> Line.Line Rational
+fractional (Line.Line a b) = Line.Line (fromInteger <$> a) (fromInteger <$> b)

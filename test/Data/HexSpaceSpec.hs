@@ -150,12 +150,14 @@ spec = do
       \(c :: Cube Integer) -> let p = (fromInteger <$> c) <+> Data.HexSpace.scale (1 / 3 :: Rational) (cardinal E)
                               in Line.through (Line.Line p p) c && not (Line.through (Line.Line p p) (c <+> cardinal E))
 
-    it "touches a hex at its corner" $
+    it "touches a hex at its corner, and misses it a little way out" $ do
       let radial  = unitHexCorner (ccwEnd NE) :: Torsor Rational
-          tangent = cross (torsor 1 1 1) radial
+          tangent = cardinal (Data.HexSpace.before (ccwEnd NE)) - cardinal (Data.HexSpace.after (ccwEnd NE))
           corner  = origo <+> radial
           across  = Line.Line (corner <+> Data.HexSpace.scale (1 / 2) tangent) (corner <+> Data.HexSpace.scale (-1 / 2) tangent)
-      in Line.through across (origo :: Cube Integer) `shouldBe` True
+          outward = Line.Line (Line.start across <+> Data.HexSpace.scale (1 / 10) radial) (Line.end across <+> Data.HexSpace.scale (1 / 10) radial)
+      Line.through across  (origo :: Cube Integer) `shouldBe` True
+      Line.through outward (origo :: Cube Integer) `shouldBe` False
 
     it "misses a hex it runs beside" $
       let beside = Line.Line (origo <+> Data.HexSpace.scale 2 (cardinal NW)) (origo <+> Data.HexSpace.scale 2 (cardinal NE)) :: Line.Line Rational
